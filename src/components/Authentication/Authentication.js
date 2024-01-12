@@ -43,7 +43,7 @@ const Authentication = (props) => {
 
     if (!isLogin && enterdPassword === enterdConfirmPassword) {
       url =
-        "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyBG_zzX0vmA0rh-Ngs3iUqHr5rh6UIpfgM";
+        "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyCx6diWtCvuIc81jygEdF0IKmvnDVNFLyE";
     }
 
     fetch(url, {

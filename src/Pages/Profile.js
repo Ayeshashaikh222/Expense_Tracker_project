@@ -3,6 +3,8 @@ import Header from "../components/Layout/Header";
 import { Button, Container, Form } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import AuthContext from "../Store/AuthContext";
+import stylesheet from "./Profile.module.css";
+import { AiOutlineGithub, AiOutlineGlobal } from "react-icons/ai";
 
 const Profile = (props) => {
 
@@ -17,14 +19,14 @@ const Profile = (props) => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        fetch("https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=AIzaSyBG_zzX0vmA0rh-Ngs3iUqHr5rh6UIpfgM", {
+        fetch("https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=AIzaSyCx6diWtCvuIc81jygEdF0IKmvnDVNFLyE",{
             method: "POST",
             body: JSON.stringify({
-                idToken: authcontext.token
+                idToken: authcontext.token,
             }),
             headers: {
                 "Content-Type": "application/json",
-            }
+            },
         }).then((res) => {
             if (res.ok) {
                 return res.json()
@@ -47,8 +49,7 @@ const Profile = (props) => {
 
     const cancelHandler = () => {
         navigate("/home");
-    }
-
+    };
 
 
     const updateSubmitHandler = (event) => {
@@ -59,7 +60,7 @@ const Profile = (props) => {
 
         let errorMessage;
 
-        fetch("https://identitytoolkit.googleapis.com/v1/accounts:update?key=AIzaSyBG_zzX0vmA0rh-Ngs3iUqHr5rh6UIpfgM", {
+        fetch("https://identitytoolkit.googleapis.com/v1/accounts:update?key=AIzaSyCx6diWtCvuIc81jygEdF0IKmvnDVNFLyE", {
             method: "POST",
             body: JSON.stringify({
                 idToken: authcontext.token,
@@ -72,8 +73,8 @@ const Profile = (props) => {
             },
         }).then((res) => {
             if (res.ok) {
-                setFullName(enteredFullName)
-                setProfileUrl(enteredProfileUrl)
+                setFullName(enteredFullName);
+                setProfileUrl(enteredProfileUrl);
                 return res.json()
             } else {
                 return res.json().then((data) => {
@@ -93,33 +94,67 @@ const Profile = (props) => {
 
     const fullNameInputChangeHandler = () => {
         setFullName(fullNameInputRef.current.value)
-        console.log(fullName);
+        // console.log(fullName);
     };
 
     const profileUrlInputChangeHandler = () => {
         setProfileUrl(ProfileUrlInputRef.current.value)
-        console.log(profileUrl);
+        // console.log(profileUrl);
     };
 
     return (
         <>
             <Header />
-            <Container>
-                <Form onSubmit={updateSubmitHandler}>
-                    <header style={{ marginBottom: "15px" }}>
-                        Update Details
-                        <Button onClick={cancelHandler}>Cancel</Button>
-                    </header>
-                    <Form.Group controlId="formBasicFullName">
-                        <Form.Label>Full Name</Form.Label>
-                        <Form.Control type="text" value={fullName} placeholder="Enter Full Name" ref={fullNameInputRef} required onChange={fullNameInputChangeHandler} />
-                    </Form.Group>
-
-                    <Form.Group controlId="formBasicProfileURL">
-                        <Form.Label>Profile Photo</Form.Label>
-                        <Form.Control type="text" value={profileUrl} placeholder="Paste Profile" ref={ProfileUrlInputRef} required onChange={profileUrlInputChangeHandler} />
-                    </Form.Group>
-                    <Button type="submit">Update</Button>
+            <Container className={stylesheet.profileContainer}>
+                <header style={{ marginBottom: "15px", display: 'flex', justifyContent: "space-between" }}>
+                    Update Details
+                    <Button onClick={cancelHandler} className={stylesheet.cancelbtn}>Cancel</Button>
+                </header>
+                <Form onSubmit={updateSubmitHandler} className={stylesheet.profile}>
+                    <Container style={{ display: 'flex', flexDirection: 'column' }}>
+                        <Container className={stylesheet.inputTxt}>
+                            <Form.Group
+                                controlId="formBasicFullName"
+                                style={{ fontSize: "18px" }}
+                            >
+                                <Form.Label>
+                                    {" "}
+                                    <AiOutlineGithub style={{ color: "000" }} /> Name :
+                                </Form.Label>
+                                <Form.Control
+                                    style={{ marginLeft: "10px" }}
+                                    type="text"
+                                    placeholder="Enter full Name"
+                                    ref={fullNameInputRef}
+                                    required
+                                    onChange={fullNameInputChangeHandler}
+                                    value={fullName}
+                                />
+                            </Form.Group>
+                            <Form.Group
+                                controlId="formBasicProfileURL"
+                                style={{ marginLeft: "16px", fontSize: "18px" }}
+                            >
+                                <Form.Label>
+                                    {" "}
+                                    <AiOutlineGlobal style={{ color: "000" }} /> Profile Photo
+                                    URL:
+                                </Form.Label>
+                                <Form.Control
+                                    style={{ marginLeft: "10px" }}
+                                    type="text"
+                                    placeholder="Paste profile photo url here"
+                                    ref={ProfileUrlInputRef}
+                                    required
+                                    onChange={profileUrlInputChangeHandler}
+                                    value={profileUrl}
+                                />
+                            </Form.Group>
+                        </Container>
+                        <Form.Group className={stylesheet.updateBtn}>
+                            <Button type="submit">Update</Button>
+                        </Form.Group>
+                    </Container>
                 </Form>
             </Container>
         </>

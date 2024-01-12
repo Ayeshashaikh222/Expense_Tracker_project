@@ -89,7 +89,9 @@ const Authentication = (props) => {
           alert(errorMessage)
         }else{
           if(isLogin){
+            console.log("Before navigating to /home");
             navigate('/home')
+            
             console.log("User has successfully signed in")
           }else{
             navigate('/home')
@@ -98,7 +100,7 @@ const Authentication = (props) => {
 
           authcontext.login(data.idToken);
           console.log(data);
-          
+
           if(!isLogin){
             confirmPasswordInputRef.current.value=""
           }

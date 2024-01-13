@@ -122,7 +122,7 @@ const Profile = (props) => {
                                     <AiOutlineGithub style={{ color: "000" }} /> Name :
                                 </Form.Label>
                                 <Form.Control
-                                    style={{ marginLeft: "10px" }}
+                                    style={{ marginLeft: "10px", borderRadius: "5px" }}
                                     type="text"
                                     placeholder="Enter full Name"
                                     ref={fullNameInputRef}
@@ -141,7 +141,7 @@ const Profile = (props) => {
                                     URL:
                                 </Form.Label>
                                 <Form.Control
-                                    style={{ marginLeft: "10px" }}
+                                    style={{ marginLeft: "10px", borderRadius: "5px"}}
                                     type="text"
                                     placeholder="Paste profile photo url here"
                                     ref={ProfileUrlInputRef}

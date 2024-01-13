@@ -5,6 +5,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import AuthContext from './Store/AuthContext';
 import Home from './Pages/Home';
 import Profile from './Pages/Profile';
+import Verification from './components/Authentication/Verification';
 
 
 function App() {
@@ -21,9 +22,9 @@ function App() {
 
        {authcontext.isLoggedIn && (
        <>
+       <Route path="/verification" element={<Verification />}/>
        <Route path="/home" element={<Home />}/>
        <Route path="/profile" element={<Profile />}/>
-       
        </>
        )}
 

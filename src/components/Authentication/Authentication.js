@@ -97,7 +97,7 @@ const Authentication = (props) => {
             navigate('/home')
             console.log("User has successfully signed up")
           }
-
+          
           authcontext.login(data.idToken);
           console.log(data);
 

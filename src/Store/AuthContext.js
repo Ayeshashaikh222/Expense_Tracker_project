@@ -35,8 +35,8 @@ export const AuthContextProvider = (props) => {
      setEmailVerified(isEmailVerified);
      localStorage.setItem("token", token);
      localStorage.setItem("email", email);
-    //  console.log(token);
-    //  console.log(email);
+     
+     
     };
 
     const logoutHandler = () => {

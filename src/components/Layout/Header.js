@@ -34,7 +34,7 @@ const Header = (props) => {
           )}
         </Container>
         {authcontext.isLoggedIn && location.pathname !== "/auth" && (
-          <Button className={stylesheet.logoutBtn}>
+          <Button className={stylesheet.logoutBtn} onClick={authcontext.logout}>
             <BiLogOut className={stylesheet["logout-icon"]} />
             <span>Log Out</span>
           </Button>

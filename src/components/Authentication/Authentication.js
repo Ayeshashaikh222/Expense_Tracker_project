@@ -89,16 +89,15 @@ const Authentication = (props) => {
           alert(errorMessage)
         }else{
           if(isLogin){
-            
-            navigate('/verification')
-            
+            navigate('/home')
             console.log("User has successfully signed in")
           }else{
-            navigate('/home')
+            
+            navigate('/verification')
             console.log("User has successfully signed up")
           }
           
-          authcontext.login(data.idToken);
+          authcontext.login(data.idToken,data.email);
           console.log(data);
 
           if(!isLogin){
@@ -115,6 +114,9 @@ const Authentication = (props) => {
       });
   };
 
+  const forgetPasswordHandler= () => {
+      navigate("/forget");
+  };
 
   return (
     <>
@@ -187,11 +189,17 @@ const Authentication = (props) => {
             />
           </Form.Group>
          )}
+         {isLogin &&
+           <Form.Group as={Col} className={`${stylesheet["form-group"]}`}>
+            <Button onClick={forgetPasswordHandler} className={stylesheet.forgetBtn}>Forget Password ?</Button>
+           </Form.Group>
+           }
           <Form.Group as={Col} className={`${stylesheet["form-group"]}`}>
             <Button type="submit" className={stylesheet.btn}>
            { isLogin ? "Log In" : "Sign Up"}
             </Button>
           </Form.Group>
+          
         </Row>
 
       </Form>

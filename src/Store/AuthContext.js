@@ -32,9 +32,11 @@ export const AuthContextProvider = (props) => {
     const logInHandler = (token, email, isEmailVerified) => {
      setToken(token);
      setEmail(email);
+     console.log(email);
      setEmailVerified(isEmailVerified);
      localStorage.setItem("token", token);
      localStorage.setItem("email", email);
+     localStorage.setItem("isEmailVerified",isEmailVerified)
      
      
     };
@@ -42,8 +44,11 @@ export const AuthContextProvider = (props) => {
     const logoutHandler = () => {
         setToken(null);
         setEmail(null);
+        setEmailVerified(false)
+        localStorage.clear();
         localStorage.removeItem("token");
         localStorage.removeItem("email");
+        localStorage.removeItem("isEmailVerified");
 
     };
 

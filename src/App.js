@@ -6,6 +6,7 @@ import AuthContext from './Store/AuthContext';
 import Home from './Pages/Home';
 import Profile from './Pages/Profile';
 import Verification from './components/Authentication/Verification';
+import ResetPassword from './components/Authentication/ResetPassword';
 
 
 function App() {
@@ -32,6 +33,8 @@ function App() {
       <Route path="/auth" element={<Authentication />} />}
 
       <Route path="*" element={<Navigate to="/" />} />  
+
+      <Route path="/forget" element={<ResetPassword />} />
     
     </Routes>
 

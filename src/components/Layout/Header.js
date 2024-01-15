@@ -13,6 +13,12 @@ const Header = (props) => {
 
     const navigate = useNavigate();
 
+    const logoutHandler = () => {
+        authcontext.logout();
+        navigate("/auth",{replace:true})
+    
+      };
+
     return (
         <>
            <Navbar expand="lg" className={stylesheet.navbar}>
@@ -34,7 +40,7 @@ const Header = (props) => {
           )}
         </Container>
         {authcontext.isLoggedIn && location.pathname !== "/auth" && (
-          <Button className={stylesheet.logoutBtn} onClick={authcontext.logout}>
+          <Button className={stylesheet.logoutBtn} onClick={logoutHandler}>
             <BiLogOut className={stylesheet["logout-icon"]} />
             <span>Log Out</span>
           </Button>

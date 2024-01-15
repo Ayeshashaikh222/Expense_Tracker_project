@@ -20,7 +20,8 @@ const Vertification = (props) => {
 
     useEffect(() => {
         if (authcontext.emailVerified) {
-            navigate("/home");
+            // navigate("/home");
+            setIsEmailVerified(true)
         }
     }, [authcontext.emailVerified]);
 
@@ -45,11 +46,14 @@ const Vertification = (props) => {
             if (res.ok) {
                 setEmail('');
                 setIsEmailVerified(true);
+                navigate("/home")
                 return res.json();
             } else {
                 return res.json().then((data) => {
-                    if (data.email === enteredEmail) {
-                        navigate("/home");
+                    console.log(data)
+                    if (IsEmailVerified && data.email === enteredEmail) {
+                        navigate('/home')
+                        console.log(data)
                     }
 
                     if (data.error && data.error.message) {
@@ -79,7 +83,7 @@ const Vertification = (props) => {
         setEmail(emailInputRef.current.value);
     };
 
-    if (IsEmailVerified) {
+    if (IsEmailVerified && email===authcontext.email) {
         navigate("/home");
     }
 
@@ -99,13 +103,13 @@ const Vertification = (props) => {
                                 value={email}
                                 placeholder="Enter Your Email Here"
                                 required
-                                ref ={emailInputRef}
+                                ref={emailInputRef}
                                 onChange={emailInputChangeHandler}
                             />
                         </Form.Group>
-                        { isLoading ? (<Button className={styleSheet.btn}><Spinner animation="border" size="sm" />Verifying</Button>) :
-                        <Button type="submit" style={{ marginTop: "15px" }} className={styleSheet.btn}>Verify</Button>}
-                        
+                        {isLoading ? (<Button className={styleSheet.btn}  style={{ marginTop: "15px" }}><Spinner animation="border" size="sm" />Verifying</Button>) :
+                            <Button type="submit" style={{ marginTop: "15px" }} className={styleSheet.btn}>Verify</Button>}
+
                     </Form>
                 </Card.Body>
             </Card>

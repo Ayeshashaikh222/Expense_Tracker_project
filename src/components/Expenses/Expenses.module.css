@@ -2,7 +2,7 @@
     background: #fff;
     width: 500px;
     /* height: 400px; */
-    margin: 60px auto ;
+    margin: 60px auto;
 
     box-sizing: border-box;
     box-shadow: rgba(60, 66, 87, 0.12) 0px 7px 14px 0px, rgba(0, 0, 0, 0.12) 0px 3px 6px 0px;
@@ -11,6 +11,8 @@
     /* transition: 0.3s; */
 
 }
+
+
 
 .ul {
     display: flex;
@@ -23,11 +25,54 @@
 .list {
     box-shadow: rgba(60, 66, 87, 0.12) 0px 5px 10px 0px, rgba(0, 0, 0, 0.12) 0px 3px 6px 0px;
     list-style-type: none;
-    padding: 18px;
-    margin: 5px 0;
+    padding: 18px !important;
+    margin: 5px 0 !important;
     transition: 0.3s;
     color: #000;
-    background-color: rgb(213, 252, 239);
+    /* background-color: rgb(213, 252, 239); */
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
 
+
+}
+
+.list p {
+    font-size: 1.1rem;
+}
+
+.deleteBtn {
+    font-size: 1.3rem !important;
+    border: none !important;
+    color: red !important;
+    background: transparent !important;
+    cursor: pointer;
+}
+
+.editBtn {
+    margin-left: 10px !important;
+    border: none !important;
+    font-size: 1.3rem !important;
+    background: transparent !important;
+    color: turquoise !important;
+    cursor: pointer ;
+}
+.modal-delete{
+    display: flex !important;
+    background: transparent !important;
+    color: red !important;
+
+    font-size: 1.2rem !important;
+    border: 1px solid red !important;
+    align-items: center !important;
+}
+
+.modal-cancel{
+    display: flex !important;
+    background: transparent !important;
+   border: 1px solid turquoise !important;
+   align-items: center !important;
+   color: turquoise !important;
+   font-size: 1.3rem !important;
 
 }

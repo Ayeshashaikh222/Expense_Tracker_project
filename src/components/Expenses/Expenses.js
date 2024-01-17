@@ -1,29 +1,38 @@
-import React, {useState, useEffect, useContext} from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Container, ListGroup } from "react-bootstrap";
 import styleSheet from "./Expenses.module.css";
+import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
+import {GiCancel} from 'react-icons/gi'
 import AuthContext from "../../Store/AuthContext";
+import { eventWrapper } from "@testing-library/user-event/dist/utils";
 
 const Expenses = () => {
 
     const authcontext = useContext(AuthContext);
 
     const [expenses, setExpenses] = useState([]);
+    const [showEditModal, setShowEditModal] = useState(false);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [expenseToEdit, setExpenseToEdit] = useState(null);
+    const [expenseToDelete, setExpenseToDelete] = useState(null);
+
 
     const email = authcontext.email.replace(/[^a-zA-Z0-9]/g, "");
 
+    
     const fetchExpenseHandler = () => {
         fetch(`https://expensedata-34e5e-default-rtdb.firebaseio.com/expenses${email}.json`).then((res) => {
-            if(res.ok){
+            if (res.ok) {
                 console.log("Successful");
                 return res.json();
             } else {
-                return res.json().then((data)=> {
+                return res.json().then((data) => {
                     console.log("Failed to fetch expenses");
                 });
             }
         }).then((data) => {
             let fetchedExpenses = []
-            for(const key in data){
+            for (const key in data) {
                 fetchedExpenses.push({
                     id: key,
                     currency: data[key].currency,
@@ -42,25 +51,214 @@ const Expenses = () => {
         fetchExpenseHandler();
     }, [fetchExpenseHandler]);
 
+    const handlerDeleteModalClose = () => {
+        setShowDeleteModal(false)
+        setExpenseToEdit(null);
+    };
+
+    const handlerDeleteModalShow = (expense) => {
+        setShowDeleteModal(true);
+        setExpenseToDelete(expense);
+    };
+
+    const deleteExpenseHandler = (id) => {
+        fetch(`https://expensedata-34e5e-default-rtdb.firebaseio.com/expenses${email}/${expenseToDelete.id}.json`, {
+            method: "DELETE",
+        }
+        ).then((res) => {
+            if (res.ok) {
+                console.log("successfully deleted");
+                return res.json();
+            }
+        });
+        handlerDeleteModalClose();
+        fetchExpenseHandler();
+    };
+
+    const handlerEditModalClose = () => {
+       setShowEditModal(false);
+       setExpenseToEdit(null);
+    };
+
+    const handlerEditModalShow = (expense) => {
+         setShowEditModal(true);
+         setExpenseToEdit(expense);
+    };
+
+    const handlerEditExpense = (event) => {
+        event.preventDefault();
+
+        const updateExpense = {
+            ...expenseToEdit,
+            currenty: event.target.currency.value,
+            category: event.target.category.value,
+            description: event.target.description.value,
+            amount: event.target.amount.value
+            
+
+        };
+
+        fetch(`https://expensedata-34e5e-default-rtdb.firebaseio.com/expenses${email}/${updateExpense.id}.json`, {
+            method: "PUT",
+            body: JSON.stringify(updateExpense),
+            headers: {
+                "content-Type": "application/json",
+            },
+        }).then((res) => {
+            if(res.ok){
+                console.log("successfully update the expense");
+                return res.json();
+            } else {
+                return res.json().then((data) => {
+                    console.log("failed to update the expense")
+                });
+            }
+        });
+        handlerEditModalClose();
+        fetchExpenseHandler();
+
+    };
+
 
     return (
         <>
-        <Container breakpoints={["xxxl", "xxl", "xl", "lg", "md", "sm", "xs", "xxs"]}
-        minbreakpoint="xxs"
-        className={styleSheet.expenses}>
-            <ListGroup as="ul" className={styleSheet.ul}>
-                {expenses.map((expense, index) => (
-                   <ListGroup.Item key={index} as="li" style={{color: "#000"}} className={styleSheet.list}>
-                   {expenses.currency} - {expense.category} - {expense.description} -  ${expense.amount}  
-                    
-                   </ListGroup.Item>
-                     
-                ))}
-                
-            </ListGroup>
-        </Container>
-        </>
-    );
-};
+            <Container className={styleSheet.expenses}>
+                <ListGroup as="ul" className={styleSheet.ul}>
+                    <ListGroup.Item style={{ textAlign: "justify" }}
+                        className={styleSheet.list}>
+                        Amount Description Category{" "}
+                    </ListGroup.Item>
+                    {expenses.map((expense, index) => (
+                        <ListGroup.Item
+                            key={index}
+                            as="li"
+                            style={{ color: "#000" }}
+                            className={styleSheet.list}
+                        >
+                            <p>
+                            
+                                <span>
+                                    {expense.currency}
+                                    {expense.amount}
+                                </span>
+                                <span style={{ margin: "10px" }}>{expense.description}</span>
+                                <span>{expense.category}</span>
+                            </p>
+                            <span>
+                            
+                                <Button
+                                    type="submit"
+                                    onClick={() => handleDeleteModalShow(expense)}
+                                    className={styleSheet.deleteBtn}
+                                >
+                                    <AiOutlineDelete />{" "}
+                                </Button>
+                                <Button type="submit" onClick={()=>handlerEditModalShow(expense)}  className={styleSheet.editBtn}>
+                                    <AiOutlineEdit />
+                                </Button>
+                            </span>
+                        </ListGroup.Item>
+                    ))}
+
+                </ListGroup>
+            </Container>
+
+            {/* Delete Modal */}
+      <Modal
+        show={showDeleteModal}
+        backdrop="static"
+        keyboard={false}
+        onHide={handlerDeleteModalClose}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>
+          Delete Expense
+          </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+          <p>Are you sure you want to delete this expense?</p>
+        </Modal.Body>
+
+        <Modal.Footer>
+          <Button className={styleSheet['modal-cancel']} onClick={handlerDeleteModalClose}>
+            <GiCancel/>
+
+          </Button>
+          <Button className={styleSheet['modal-delete']} onClick={deleteExpenseHandler}>
+            <AiOutlineDelete/>
+
+          </Button>
+        </Modal.Footer>
+
+      </Modal>
+
+      {/* Edit modal */}
+      <Modal show={showEditModal} onHide={handlerEditModalClose}>
+      <Form onSubmit={handlerEditExpense}>
+      <Modal.Header closeButton>
+            <Modal.Title>Edit Expense</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+          
+          <Form.Group className={styleSheet["form-group"]}>
+            <Form.Select
+              aria-label="expenseCategroy"
+              defaultValue={expenseToEdit ? expenseToEdit.category : ""}
+
+              >
+              <option value={null}>Select Where You Spend </option>
+              <option value="car servicing">Car servicing </option>
+              <option value="petrol">Petrol </option>
+              <option value='food'>Food</option>
+              <option value="grocery">Grocery</option>
+            </Form.Select>
+          </Form.Group>
+
+
+          <Form.Group  style={{display:'flex',flexDirection:"row",alignItems:"center"}}>
+            <Form.Label>Amount: </Form.Label>
+            <Form.Select  
+             defaultValue={expenseToEdit ? expenseToEdit.currency : ""}
+
+
+           >
+            <option value={null}>Select currency </option>
+            <option value="$">$</option>
+            <option value="₹">₹</option>
+            <option value="€">€</option>
+            
+            </Form.Select>
+            <Form.Control style={{width:"100%"}}
+              type="number"
+
+              defaultValue={expenseToEdit ? expenseToEdit.amount : ""}
+              />
+
+          </Form.Group>
+          <Form.Group className={styleSheet["form-group"]}>
+            <Form.Label>Description: </Form.Label>
+            <Form.Control
+              type="text"
+              defaultValue={expenseToEdit ? expenseToEdit.description : ""}
+
+              />
+          </Form.Group>
+          
+
+          </Modal.Body>
+          <Modal.Footer>
+            <Button  onClick={handlerEditModalClose}>
+              Cancel
+            </Button>
+            <Button  type="submit">
+              Save Changes
+            </Button>
+          </Modal.Footer>
+          </Form>
+      </Modal>
+    </>
+  );
+}; 
+    
 
 export default Expenses;

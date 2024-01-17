@@ -121,11 +121,8 @@ const Authentication = (props) => {
   return (
     <>
       <Form onSubmit={submitHandler}
-        className={`${isLogin?stylesheet['auth-root-login']:stylesheet["auth-root"]}`}
-        breakpoints={["xxxl", "xxl", "xl", "lg", "md", "sm", "xs", "xxs"]}
-        minbreakpoint="xxs"
-      >
-        <Row xs={2} md={4} lg={6}>
+        className={`${isLogin?stylesheet['auth-root-login']:stylesheet["auth-root"]}`}>
+        <Row>
           <Col>
             <h2 className={stylesheet.heading}>
             <BiSolidLockAlt className={stylesheet.lock} />
@@ -143,7 +140,7 @@ const Authentication = (props) => {
               className={`${stylesheet["form-controls"]}`}
 
               type="email"
-              placeholder="Email"
+              placeholder="Enter Email"
               required
               ref={emailInputRef}
 
@@ -151,9 +148,6 @@ const Authentication = (props) => {
           </Form.Group>
 
           <Form.Group
-            as={Col}
-            xs={12}
-            md={8}
             className={`${stylesheet["form-group"]}`}
           >
             <Form.Label className={stylesheet["form-label"]}>
@@ -171,9 +165,6 @@ const Authentication = (props) => {
           </Form.Group>
 
          {!isLogin && ( <Form.Group
-            as={Col}
-            xs={12}
-            md={8}
             className={`${stylesheet["form-group"]}`}
           >
             <Form.Label className={stylesheet["form-label"]}>
@@ -190,7 +181,7 @@ const Authentication = (props) => {
           </Form.Group>
          )}
          {isLogin &&
-           <Form.Group as={Col} className={`${stylesheet["form-group"]}`}>
+           <Form.Group className={`${stylesheet["form-group"]}`}>
             <Button onClick={forgetPasswordHandler} className={stylesheet.forgetBtn}>Forget Password ?</Button>
            </Form.Group>
            }

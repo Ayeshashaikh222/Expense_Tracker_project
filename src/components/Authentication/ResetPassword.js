@@ -74,20 +74,20 @@ const ResetPassword = (props) => {
 
     return (
         <>
-            <Form onSubmit={resetPasswordSubmitHandler} className={StyleSheet["auth-root-reset"]} breakpoints={["xxxl", "xxl", "xl", "lg", "md", "sm", "xs", "xxs"]} minbreakpoint="xxs">
-                <Row xs={2} md={4} lg={6}>
+            <Form onSubmit={resetPasswordSubmitHandler} className={StyleSheet["auth-root-reset"]}>
+                <Row>
                     <Col>
                         <h2 className={StyleSheet.heading}>
                             <MdLockReset className={StyleSheet.lock} />
                             Reset Password
                         </h2>
                     </Col>
-                    <Form.Group as={Col} xs={12} md={8} className={`${styleSheet["form-group"]}`} >
+                    <Form.Group className={`${styleSheet["form-group"]}`} >
                       <Form.Label className={styleSheet["form-label"]}>Email</Form.Label>
                       <Form.Control className={`${styleSheet["form-controls"]}`}
                       type="email" placeholder="Enter Register Email" value={email} ref={emailInputRef} required onChange={emailInputChangeHandler}/>
                     </Form.Group>
-                    <Form.Group as={Col} className={`${styleSheet["form-group"]}`}>
+                    <Form.Group className={`${styleSheet["form-group"]}`}>
                      {!isLoading ? (<Button type="submit"  className={styleSheet.btn}>Reset</Button>) : 
                      <Button type="submit" className={styleSheet.btn}>Sending Url...</Button>}
                     </Form.Group>

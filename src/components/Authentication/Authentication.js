@@ -130,9 +130,6 @@ const Authentication = (props) => {
             </h2>
           </Col>
           <Form.Group
-            as={Col}
-            xs={12}
-            md={8}
             className={`${stylesheet["form-group"]}`}
           >
             <Form.Label className={stylesheet["form-label"]}>Email</Form.Label>

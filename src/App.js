@@ -10,16 +10,13 @@ import ResetPassword from './components/Authentication/ResetPassword';
 
 
 function App() {
+  
   const authcontext = useContext(AuthContext);
-
-
   return (
     <>
     <Routes>
       
       <Route path='/' element={<Authentication />} />
-
-      
 
        {authcontext.isLoggedIn && (
        <>
@@ -42,5 +39,4 @@ function App() {
 
   );
 }
-
 export default App;

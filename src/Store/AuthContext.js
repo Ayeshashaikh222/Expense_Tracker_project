@@ -20,14 +20,23 @@ export const AuthContextProvider = (props) => {
 
     const userIsLoggedIn = !!token;
 
+//     const initialToken = localStorage.getItem("token");
+//     const initialEmail = localStorage.getItem("email");
+//   if(initialToken && initialEmail){
+//       setToken(initialToken);
+//       setEmail(initialEmail);
+//   }
+  
     useEffect(() => {
-        const initialToken = localStorage.getItem("token");
-        const initialEmail = localStorage.getItem("email");
+          const initialToken = localStorage.getItem("token");
+          const initialEmail = localStorage.getItem("email");
         if(initialToken && initialEmail){
             setToken(initialToken);
             setEmail(initialEmail);
         }
     }, []);
+
+    
 
     const logInHandler = (token, email, isEmailVerified) => {
      setToken(token);

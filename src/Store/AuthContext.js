@@ -14,27 +14,34 @@ const AuthContext = React.createContext({
 
 export const AuthContextProvider = (props) => {
 
-    const [token, setToken] = useState("");
-    const [email, setEmail] = useState("");
+    const initialToken = localStorage.getItem("token");
+    const initialEmail = localStorage.getItem("email");
+
+    const [token, setToken] = useState(initialToken);
+    const [email, setEmail] = useState(initialEmail);
     const [emailVerified, setEmailVerified] = useState(false);
 
     const userIsLoggedIn = !!token;
 
-//     const initialToken = localStorage.getItem("token");
-//     const initialEmail = localStorage.getItem("email");
-//   if(initialToken && initialEmail){
-//       setToken(initialToken);
-//       setEmail(initialEmail);
-//   }
+
   
-    useEffect(() => {
-          const initialToken = localStorage.getItem("token");
-          const initialEmail = localStorage.getItem("email");
-        if(initialToken && initialEmail){
-            setToken(initialToken);
-            setEmail(initialEmail);
-        }
-    }, []);
+    // useEffect(() => {
+    //     const initialToken = localStorage.getItem("token");
+    //     const initialEmail = localStorage.getItem("email");
+        
+    //     if(isLoggedIn){
+    //         setToken(initialToken);
+    //         setEmail(initialEmail);
+    //     }
+    //     // if (initialToken) {
+    //     //     setToken(initialToken);
+    //     // }
+    
+    //     // if (initialEmail) {
+    //     //     setEmail(initialEmail);
+    //     // }
+    //     // console.log("redirecting");
+    // }, []);
 
     
 
@@ -54,7 +61,7 @@ export const AuthContextProvider = (props) => {
         setToken(null);
         setEmail(null);
         setEmailVerified(false)
-        localStorage.clear();
+        // localStorage.clear();
         localStorage.removeItem("token");
         localStorage.removeItem("email");
         localStorage.removeItem("isEmailVerified");

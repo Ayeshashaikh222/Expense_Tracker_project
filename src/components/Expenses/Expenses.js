@@ -32,7 +32,7 @@ const Expenses = () => {
     };
 
     const deleteExpenseHandler = (id) => {
-        fetch(`https://expensedata-34e5e-default-rtdb.firebaseio.com/expenses${email}/${expenseToDelete.id}.json`, {
+        fetch(`https://expense-tracker-4f57e-default-rtdb.firebaseio.com/expenses${email}/${expenseToDelete.id}.json`, {
             method: "DELETE",
         }
         ).then((res) => {
@@ -41,6 +41,7 @@ const Expenses = () => {
                 return res.json();
             }
         });
+
         handlerDeleteModalClose();
         fetchExpenseHandler();
     };
@@ -63,6 +64,7 @@ const Expenses = () => {
                 [name]: value,
             }
         ))
+        
     };
 
     const handlerEditExpense = (event) => {
@@ -70,7 +72,7 @@ const Expenses = () => {
 
         const updateExpense = {
             ...expenseToEdit,
-            currenty: event.target.currency.value,
+            currency: event.target.currency.value,
             category: event.target.category.value,
             description: event.target.description.value,
             amount: event.target.amount.value
@@ -78,7 +80,7 @@ const Expenses = () => {
 
         };
 
-        fetch(`https://expensedata-34e5e-default-rtdb.firebaseio.com/expenses${email}/${updateExpense.id}.json`, {
+        fetch(`https://expense-tracker-4f57e-default-rtdb.firebaseio.com/expenses${email}/${updateExpense.id}.json`, {
             method: "PUT",
             body: JSON.stringify(updateExpense),
             headers: {
@@ -100,7 +102,7 @@ const Expenses = () => {
     };
 
     const fetchExpenseHandler = () => {
-        fetch(`https://expensedata-34e5e-default-rtdb.firebaseio.com/expenses${email}.json`).then((res) => {
+        fetch(`https://expense-tracker-4f57e-default-rtdb.firebaseio.com/expenses${email}.json`).then((res) => {
             if (res.ok) {
                 console.log("Successful");
                 return res.json();
@@ -128,7 +130,7 @@ const Expenses = () => {
 
     useEffect(() => {
         fetchExpenseHandler();
-    }, [fetchExpenseHandler]);
+    }, []);
 
  
     

@@ -35,7 +35,7 @@ const AddExpenses = () => {
         setAmount(amountInputRef.current.value);
     };
 
-    const submitHandler = (event) => {
+    const submitHandler = async (event) => {
         event.preventDefault();
 
         const expenseData = {
@@ -49,20 +49,18 @@ const AddExpenses = () => {
         setCategory("");
         setDescription("");
         setAmount("");
+        
 
     };
 
     const email = authcontext.email.replace(/[^a-zA-Z0-9]/g, "");
 
     useEffect (() => {
-        fetch(`https://expensedata-34e5e-default-rtdb.firebaseio.com/expenses${email}.json`, {
-            method: "POST",
-            body: JSON.stringify([])
-        })
-    }, [email])
+        fetch(`https://expense-tracker-4f57e-default-rtdb.firebaseio.com/expenses${email}.json`)
+    }, [])
 
     const addExpenseHandler = (expenseData) => {
-        fetch(`https://expensedata-34e5e-default-rtdb.firebaseio.com/expenses${email}.json`, {
+        fetch(`https://expense-tracker-4f57e-default-rtdb.firebaseio.com/expenses${email}.json`, {
             method: "POST",
             body: JSON.stringify(expenseData),
             headers: {

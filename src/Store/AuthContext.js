@@ -19,6 +19,7 @@ export const AuthContextProvider = (props) => {
 
     const [token, setToken] = useState(initialToken);
     const [email, setEmail] = useState(initialEmail);
+    const [reFetch, setReFetch] = useState(false);
     const [emailVerified, setEmailVerified] = useState(false);
 
     const userIsLoggedIn = !!token;
@@ -74,7 +75,9 @@ export const AuthContextProvider = (props) => {
         isLoggedIn: userIsLoggedIn,
         emailVerified: emailVerified,
         login: logInHandler,
-        logout: logoutHandler
+        logout: logoutHandler,
+        fetch: reFetch,
+        setReFetch: setReFetch
     }
 
     return (

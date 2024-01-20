@@ -10,7 +10,7 @@ const Expenses = () => {
 
     const authcontext = useContext(AuthContext);
 
-    const [expenses, setExpenses] = useState([]);
+    const [expenses, setExpenses] = useState(null);
     const [showEditModal, setShowEditModal] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [expenseToEdit, setExpenseToEdit] = useState(null);
@@ -38,7 +38,9 @@ const Expenses = () => {
         ).then((res) => {
             if (res.ok) {
                 console.log("successfully deleted");
-                return res.json();
+                res.json();
+                authcontext.setReFetch(prevstate => !prevstate);
+
             }
         });
 
@@ -89,7 +91,8 @@ const Expenses = () => {
         }).then((res) => {
             if (res.ok) {
                 console.log("successfully update the expense");
-                return res.json();
+                res.json();
+                authcontext.setReFetch(prevstate => !prevstate);
             } else {
                 return res.json().then((data) => {
                     console.log("failed to update the expense")
@@ -112,6 +115,7 @@ const Expenses = () => {
                 });
             }
         }).then((data) => {
+            console.log(data);
             let fetchedExpenses = [];
             for (const key in data) {
                 fetchedExpenses.push({
@@ -122,6 +126,7 @@ const Expenses = () => {
                     amount: data[key].amount
                 });
             }
+            console.log(fetchedExpenses);
             setExpenses(fetchedExpenses);
         }).catch((error) => {
             console.log("Error", error);
@@ -129,8 +134,11 @@ const Expenses = () => {
     };
 
     useEffect(() => {
+
         fetchExpenseHandler();
-    }, []);
+        console.log("authcontext.fetch",authcontext.fetch);
+       
+    }, [authcontext.fetch]);
 
  
     
@@ -143,7 +151,7 @@ const Expenses = () => {
                         className={styleSheet.list}>
                         Amount - Description - Category{" "}
                     </ListGroup.Item>
-                    {expenses.map((expense, index) => (
+                    {expenses?.map((expense, index) => (
                         <ListGroup.Item
                             key={index}
                             as="li"

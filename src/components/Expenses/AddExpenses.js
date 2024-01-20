@@ -55,9 +55,10 @@ const AddExpenses = () => {
 
     const email = authcontext.email.replace(/[^a-zA-Z0-9]/g, "");
 
-    useEffect (() => {
-        fetch(`https://expense-tracker-4f57e-default-rtdb.firebaseio.com/expenses${email}.json`)
-    }, [])
+    // useEffect (() => {
+    //     fetch(`https://expense-tracker-4f57e-default-rtdb.firebaseio.com/expenses${email}.json`)
+    //     // console.log("hello");
+    // }, [])
 
     const addExpenseHandler = (expenseData) => {
         fetch(`https://expense-tracker-4f57e-default-rtdb.firebaseio.com/expenses${email}.json`, {
@@ -69,7 +70,9 @@ const AddExpenses = () => {
         }).then((res) => {
             if (res.ok) {
                 console.log("successful");
-                return res.json()
+                 res.json()
+                 authcontext.setReFetch(prevstate => !prevstate);
+                
             } else {
                 return res.json().then((data) => {
                     alert("Something went wrong");

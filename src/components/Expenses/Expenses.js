@@ -11,7 +11,7 @@ import { expenseActions } from "../../Store/expenseSlice";
 
 const Expenses = () => {
 
-    // const [csvData, setCsvData] = useState("");
+    const [csvData, setCsvData] = useState("");
     const dispatch = useDispatch();
     const userEmail = useSelector(state => state.authentication.userId);
     const email = userEmail.replace(/[^a-zA-Z0-9]/g, "");
@@ -65,6 +65,12 @@ const Expenses = () => {
                     draggable: true,
                     progress: undefined,
                 });
+                const updatedExpense = expenses.filter(
+                    (expense) => expense.id !== expenseToDelete.id
+                );
+                dispatch(expenseActions.setExpenses(updatedExpense));
+                dispatch(expenseActions.setExpenseToDelete(null));
+                dispatch(expenseActions.setShowDeleteModal(false));
                 res.json();
                 // authcontext.setReFetch(prevstate => !prevstate);
                 fetchExpenseHandler();
@@ -72,21 +78,19 @@ const Expenses = () => {
             }
         });
 
-        handlerDeleteModalClose();
+        // handlerDeleteModalClose();
         fetchExpenseHandler();
     };
 
 
 
     const handleEditInputChange = (event) => {
-        const { name, value } = event.target
-        dispatch(expenseActions.setExpenseToEdit((prevExpense) => (
-            {
-                ...prevExpense,
-                [name]: value,
-            }
-        )))
-
+        const { name, value } = event.target;
+        const updatedExpenseToEdit = {
+            ...expenseToEdit,
+            [name]: value,
+        };
+        dispatch(expenseActions.setExpenseToEdit(updatedExpenseToEdit));
     };
 
     const handlerEditExpense = (event) => {
@@ -98,8 +102,6 @@ const Expenses = () => {
             amount: event.target.amount.value,
             category: event.target.category.value,
             description: event.target.description.value,
-
-
 
         };
 
@@ -120,6 +122,13 @@ const Expenses = () => {
                     draggable: true,
                     progress: undefined,
                 });
+                const updatedExpenses = expenses.map((expense) =>
+                    expense.id === updatedExpense.id ? updatedExpense : expense
+                );
+                // Update the state
+                dispatch(expenseActions.setExpenses(updatedExpenses));
+                dispatch(expenseActions.setExpenseToEdit(null));
+                dispatch(expenseActions.setShowEditModal(false));
                 res.json();
                 // authcontext.setReFetch(prevstate => !prevstate);
                 fetchExpenseHandler();
@@ -136,7 +145,9 @@ const Expenses = () => {
                     });
                 });
             }
-        });
+        }).catch((error) => {
+            console.log(error)
+        })
 
         handlerEditModalClose();
         fetchExpenseHandler();
@@ -196,9 +207,20 @@ const Expenses = () => {
     useEffect(() => {
 
         fetchExpenseHandler();
-        console.log("authcontext.fetch", authcontext.fetch);
 
-    }, [authcontext.fetch]);
+    }, [fetchExpenseHandler]);
+
+    useEffect(() => {
+        const csv = expenses.reduce((csvString, expense) => {
+            return `${csvString} ${expense.currency}, ${expense.amount},${expense.description},${expense.category}\n`;
+        }, "Title,Amount,Description,Category\n");
+        const totalAmount = expenses.reduce((total, expense) => {
+            return total + parseInt(expense.amount);
+        }, 0);
+        setCsvData(`${csv}Total,${totalAmount},\n`);
+        //setCsvData(csv);
+    }, [expenses]);
+
 
 
 
@@ -244,6 +266,17 @@ const Expenses = () => {
 
                 </ListGroup>
 
+                <div className={styleSheet['total-expenses']}>
+                    <h5>Total: {totalAmount}</h5>
+                    <Button
+                        className={styleSheet.downloadbtn}
+                        href={`data:text/csv;charset=utf-8,${encodeURIComponent(csvData)}`}
+                        download="expenses.csv"
+                        style={{ marginLeft: "45%" }}
+                    >
+                        Download Expenses
+                    </Button>
+                </div>
 
                 {/* Delete Modal */}
                 <Modal

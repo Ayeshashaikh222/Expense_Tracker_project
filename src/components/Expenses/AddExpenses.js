@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 
-const AddExpenses = () => {
+const AddExpenses = ({premiumThem}) => {
 
     const currencyInputRef = useRef();
     const amountInputRef = useRef();
@@ -103,7 +103,7 @@ const AddExpenses = () => {
         })
     };
 
-    const fetchExpenseHandler = useCallback(() => {
+    const fetchExpenseHandler = () => {
         fetch(`https://expense-tracker-4f57e-default-rtdb.firebaseio.com/expenses${email}.json`).then((res) => {
             if (res.ok) {
                 // console.log("Successful");
@@ -153,10 +153,9 @@ const AddExpenses = () => {
 
         })
 
-    }, [addExpenseHandler]);
+    };
 
     useEffect(() => {
-
         fetchExpenseHandler();
 
     }, [fetchExpenseHandler]);
@@ -164,7 +163,7 @@ const AddExpenses = () => {
     return (
         <>
             <Container breakpoints={["xxxl", "xxl", "xl", "lg", "md", "sm", "xs", "xxs"]} minbreakpoint="xxs"
-                className={styleSheet["add-expense"]}>
+                className={premiumThem ? styleSheet["add-expense-dark"] : styleSheet["add-expense"]}>
                 <h5 className={styleSheet.title}>Add New Expense</h5>
                 <Form onSubmit={submitHandler}>
                     <Form.Group className={styleSheet["form-group"]} style={{ display: 'flex', flexDirection: "row", alignItems: "center" }}>

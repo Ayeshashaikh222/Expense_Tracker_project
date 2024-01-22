@@ -6,7 +6,8 @@ import {Container, Button} from "react-bootstrap";
 import stylesheet from './Home.module.css';
 import {useDispatch, useSelector} from "react-redux";
 import { themeActions } from '../Store/themeSlice';
-import { expenseActions } from "../Store/expensesSlice";
+import { expenseActions } from '../Store/expenseSlice';
+
 
 const Home = (props) => {
 

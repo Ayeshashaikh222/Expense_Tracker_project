@@ -1,45 +1,73 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useCallback, useState, } from "react";
 import { Container, ListGroup, Modal, Form, Button } from "react-bootstrap";
 import styleSheet from "./Expenses.module.css";
 import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
 import { GiCancel } from 'react-icons/gi'
-import AuthContext from "../../Store/AuthContext";
 import { BsSave } from 'react-icons/bs'
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { expenseActions } from "../../Store/expenseSlice";
 
 const Expenses = () => {
 
-    const authcontext = useContext(AuthContext);
+    // const [csvData, setCsvData] = useState("");
+    const dispatch = useDispatch();
+    const userEmail = useSelector(state => state.authentication.userId);
+    const email = userEmail.replace(/[^a-zA-Z0-9]/g, "");
 
-    const [expenses, setExpenses] = useState(null);
-    const [showEditModal, setShowEditModal] = useState(false);
-    const [showDeleteModal, setShowDeleteModal] = useState(false);
-    const [expenseToEdit, setExpenseToEdit] = useState(null);
-    const [expenseToDelete, setExpenseToDelete] = useState(null);
+    const { expenses,
+        totalAmount,
+        showEditModal,
+        showDeleteModal,
+        expenseToEdit,
+        expenseToDelete,
 
-
-    const email = authcontext.email.replace(/[^a-zA-Z0-9]/g, "");
-
-   
+    } = useSelector(state => state.expense);
 
     const handlerDeleteModalClose = () => {
-        setShowDeleteModal(false)
-        setExpenseToEdit(null);
+        dispatch(expenseActions.setShowDeleteModal(false));
+        dispatch(expenseActions.setExpenseToDelete(null));
+
     };
 
     const handlerDeleteModalShow = (expense) => {
-        setShowDeleteModal(true);
-        setExpenseToDelete(expense);
+        dispatch(expenseActions.setShowDeleteModal(true));
+        dispatch(expenseActions.setExpenseToDelete(expense))
+
     };
 
+    const handlerEditModalClose = () => {
+        dispatch(expenseActions.setShowEditModal(false));
+        dispatch(expenseActions.setExpenseToEdit(null));
+
+    };
+
+    const handlerEditModalShow = (expense) => {
+        dispatch(expenseActions.setShowEditModal(true));
+        dispatch(expenseActions.setExpenseToEdit(expense));
+
+    };
+
+    // delete expnese handler
     const deleteExpenseHandler = (id) => {
         fetch(`https://expense-tracker-4f57e-default-rtdb.firebaseio.com/expenses${email}/${expenseToDelete.id}.json`, {
             method: "DELETE",
         }
         ).then((res) => {
             if (res.ok) {
-                console.log("successfully deleted");
+                toast.success("successfully deleted", {
+                    position: "top-right",
+                    autoClose: 2000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: false,
+                    draggable: true,
+                    progress: undefined,
+                });
                 res.json();
-                authcontext.setReFetch(prevstate => !prevstate);
+                // authcontext.setReFetch(prevstate => !prevstate);
+                fetchExpenseHandler();
 
             }
         });
@@ -48,25 +76,17 @@ const Expenses = () => {
         fetchExpenseHandler();
     };
 
-    const handlerEditModalClose = () => {
-        setShowEditModal(false);
-        setExpenseToEdit(null);
-    };
 
-    const handlerEditModalShow = (expense) => {
-        setShowEditModal(true);
-        setExpenseToEdit(expense);
-    };
 
     const handleEditInputChange = (event) => {
         const { name, value } = event.target
-        setExpenseToEdit((prevExpense) => (
+        dispatch(expenseActions.setExpenseToEdit((prevExpense) => (
             {
                 ...prevExpense,
                 [name]: value,
             }
-        ))
-        
+        )))
+
     };
 
     const handlerEditExpense = (event) => {
@@ -75,9 +95,10 @@ const Expenses = () => {
         const updateExpense = {
             ...expenseToEdit,
             currency: event.target.currency.value,
+            amount: event.target.amount.value,
             category: event.target.category.value,
             description: event.target.description.value,
-            amount: event.target.amount.value
+
 
 
         };
@@ -90,58 +111,97 @@ const Expenses = () => {
             },
         }).then((res) => {
             if (res.ok) {
-                console.log("successfully update the expense");
+                toast.success("successfully updated", {
+                    position: "top-right",
+                    autoClose: 2000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: false,
+                    draggable: true,
+                    progress: undefined,
+                });
                 res.json();
-                authcontext.setReFetch(prevstate => !prevstate);
+                // authcontext.setReFetch(prevstate => !prevstate);
+                fetchExpenseHandler();
             } else {
                 return res.json().then((data) => {
-                    console.log("failed to update the expense")
+                    toast.error("Failed to update expense", {
+                        position: "top-right",
+                        autoClose: 2000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: false,
+                        draggable: true,
+                        progress: undefined,
+                    });
                 });
             }
         });
+
         handlerEditModalClose();
         fetchExpenseHandler();
 
     };
 
-    const fetchExpenseHandler = () => {
+    const fetchExpenseHandler = useCallback(() => {
         fetch(`https://expense-tracker-4f57e-default-rtdb.firebaseio.com/expenses${email}.json`).then((res) => {
             if (res.ok) {
-                console.log("Successful");
+                toast.success("successfully fetched", {
+                    position: "top-right",
+                    autoClose: 2000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: false,
+                    draggable: true,
+                    progress: undefined,
+                });
                 return res.json();
             } else {
                 return res.json().then((data) => {
-                    console.log("Failed to fetch expenses");
+                    toast.error("Failed to fetch expenses", {
+                        position: "top-right",
+                        autoClose: 2000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: false,
+                        draggable: true,
+                        progress: undefined,
+                    });
                 });
             }
         }).then((data) => {
             console.log(data);
             let fetchedExpenses = [];
+            let loadedAmount = 0;
             for (const key in data) {
                 fetchedExpenses.push({
                     id: key,
                     currency: data[key].currency,
+                    amount: data[key].amount,
                     category: data[key].category,
                     description: data[key].description,
-                    amount: data[key].amount
+
                 });
+                loadedAmount = loadedAmount + parseInt(data[key].amount);
+                console.log(loadedAmount);
             }
+
             console.log(fetchedExpenses);
-            setExpenses(fetchedExpenses);
-        }).catch((error) => {
-            console.log("Error", error);
+            dispatch(expenseActions.setExpenses(fetchedExpenses));
+            dispatch(expenseActions.setTotalAmount(loadedAmount));
+
         });
-    };
+    }, []);
 
     useEffect(() => {
 
         fetchExpenseHandler();
-        console.log("authcontext.fetch",authcontext.fetch);
-       
+        console.log("authcontext.fetch", authcontext.fetch);
+
     }, [authcontext.fetch]);
 
- 
-    
+
+
 
     return (
         <>
@@ -222,28 +282,8 @@ const Expenses = () => {
                         </Modal.Header>
                         <Modal.Body>
 
-                            <Form.Group className={styleSheet["form-group"]}>
-                                <Form.Label className={styleSheet["form-label"]}>Category: </Form.Label>
-                                <Form.Select
-                                    className={styleSheet['form-controls']}
-
-                                    aria-label="expenseCategroy"
-                                    value={expenseToEdit ? expenseToEdit.category : ""}
-                                    name="category"
-                                    onChange={handleEditInputChange}
-
-                                >
-                                    <option value={null}>Select Where You Spend </option>
-                                    <option value="car servicing">Car servicing </option>
-                                    <option value="petrol">Petrol </option>
-                                    <option value='food'>Food</option>
-                                    <option value="grocery">Grocery</option>
-                                </Form.Select>
-                            </Form.Group>
-
-
                             <Form.Group className={styleSheet["form-group"]} >
-                                <Form.Label className={styleSheet["form-label"]} >Amount: </Form.Label>
+                                <Form.Label className={styleSheet["form-label"]} >Amount: {" "} </Form.Label>
                                 <div style={{ display: 'flex', flexDirection: "row", alignItems: "center" }}>
                                     <Form.Select
                                         name="currency"
@@ -264,8 +304,8 @@ const Expenses = () => {
                                         onChange={handleEditInputChange}
                                     />
                                 </div>
-
                             </Form.Group>
+
                             <Form.Group className={styleSheet["form-group"]}>
                                 <Form.Label>Description: </Form.Label>
                                 <Form.Control
@@ -276,6 +316,27 @@ const Expenses = () => {
                                     onChange={handleEditInputChange}
                                 />
                             </Form.Group>
+
+
+                            <Form.Group className={styleSheet["form-group"]}>
+                                <Form.Label className={styleSheet["form-label"]}>Category: </Form.Label>
+                                <Form.Select
+                                    className={styleSheet['form-controls']}
+
+                                    aria-label="expenseCategroy"
+                                    value={expenseToEdit ? expenseToEdit.category : ""}
+                                    name="category"
+                                    onChange={handleEditInputChange}
+
+                                >
+                                    <option value={null}>Select Where You Spend </option>
+                                    <option value="car servicing">Car servicing </option>
+                                    <option value="petrol">Petrol </option>
+                                    <option value='food'>Food</option>
+                                    <option value="grocery">Grocery</option>
+                                </Form.Select>
+                            </Form.Group>
+
                         </Modal.Body>
                         <Modal.Footer>
                             <Button className={styleSheet['modal-delete']} onClick={handlerEditModalClose}>

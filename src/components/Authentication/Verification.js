@@ -1,12 +1,17 @@
-import { useState, useRef, useContext, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Container, Spinner, Card, Form, Button } from "react-bootstrap";
-import AuthContext from "../../Store/AuthContext";
 import { useNavigate } from "react-router-dom";
 import styleSheet from "./Verification.module.css";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useDispatch, useSelector } from "react-redux";
+
 
 const Vertification = (props) => {
 
     const emailInputRef = useRef();
+
+    const dispatch = useDispatch();
 
     const [email, setEmail] = useState("");
 
@@ -14,16 +19,18 @@ const Vertification = (props) => {
 
     const [isLoading, setIsLoading] = useState(false);
 
-    const authcontext = useContext(AuthContext);
+    const emailVerified = useSelector((state) => state.authentication.emailVerified);
+    const idToken = useSelector((state) => state.authentication.idToken);
+    const userId = useSelector((state) => state.authentication.userId);
 
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (authcontext.emailVerified) {
+        if (emailVerified) {
             // navigate("/home");
             setIsEmailVerified(true)
         }
-    }, [authcontext.emailVerified]);
+    }, [emailVerified]);
 
     const VerificationSubmitHandler = (event) => {
         event.preventDefault();
@@ -36,7 +43,7 @@ const Vertification = (props) => {
             method: "POST",
             body: JSON.stringify({
                 requestType: "VERIFY_EMAIL",
-                idToken: authcontext.token
+                idToken: idToken,
             }),
             headers: {
                 "Content-Type": "application/json",
@@ -44,7 +51,7 @@ const Vertification = (props) => {
         }).then((res) => {
             setIsLoading(false);
             if (res.ok) {
-                setEmail('');
+                setEmail("");
                 setIsEmailVerified(true);
                 navigate("/home")
                 return res.json();
@@ -57,33 +64,77 @@ const Vertification = (props) => {
                     }
 
                     if (data.error && data.error.message) {
-                        const errorMessage = data.error.message
-                    }
-
-                    if (errorMessage.includes("EMAIL_NOT_FOUND")) {
-                        throw new Error("Email not found. Please try again.");
-
-                    } else if (errorMessage.include("INVALID_EMAIL")) {
-                        throw new Error("Invalid email format. Please provide a valid email.");
-
-                    } else if (errorMessage.include("USER_DISABLED")) {
-                        throw new Error("This user account has been disabled. Contact support.");
+                        const errorMessage = data.error.message;
+                        if (errorMessage.includes("EMAIL_NOT_FOUND")) {
+                            toast.error("Email not found. Please try again.", {
+                                position: "top-right",
+                                autoClose: 2000,
+                                hideProgressBar: false,
+                                closeOnClick: true,
+                                pauseOnHover: false,
+                                draggable: true,
+                                progress: undefined,
+                            });
+                        } else if (errorMessage.includes("INVALID_EMAIL")) {
+                            toast.error(
+                                "Invalid email format. Please provide a valid email.",
+                                {
+                                    position: "top-right",
+                                    autoClose: 2000,
+                                    hideProgressBar: false,
+                                    closeOnClick: true,
+                                    pauseOnHover: false,
+                                    draggable: true,
+                                    progress: undefined,
+                                }
+                            );
+                        } else if (errorMessage.includes("USER_DISABLED")) {
+                            toast.error(
+                                "This user account has been disabled. Contact support.",
+                                {
+                                    position: "top-right",
+                                    autoClose: 2000,
+                                    hideProgressBar: false,
+                                    closeOnClick: true,
+                                    pauseOnHover: false,
+                                    draggable: true,
+                                    progress: undefined,
+                                }
+                            );
+                        } else {
+                            toast.error("Verification failed. Please try again later.", {
+                                position: "top-right",
+                                autoClose: 2000,
+                                hideProgressBar: false,
+                                closeOnClick: true,
+                                pauseOnHover: false,
+                                draggable: true,
+                                progress: undefined,
+                            });
+                        }
                     } else {
-                        throw new Error("Verification failed. Please try again later.");
+                        toast.error("Verification failed. Please try again later.", {
+                            position: "top-right",
+                            autoClose: 2000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: false,
+                            draggable: true,
+                            progress: undefined,
+                        });
                     }
-
-                })
+                });
             }
-        }).catch((error) => {
-            console.log(error.message)
-        })
+        });
     };
+
+
 
     const emailInputChangeHandler = () => {
         setEmail(emailInputRef.current.value);
     };
 
-    if (IsEmailVerified && email===authcontext.email) {
+    if (IsEmailVerified && email === userId) {
         navigate("/home");
     }
 
@@ -107,8 +158,20 @@ const Vertification = (props) => {
                                 onChange={emailInputChangeHandler}
                             />
                         </Form.Group>
-                        {isLoading ? (<Button className={styleSheet.btn}  style={{ marginTop: "15px" }}><Spinner animation="border" size="sm" />Verifying</Button>) :
-                            <Button type="submit" style={{ marginTop: "15px" }} className={styleSheet.btn}>Verify</Button>}
+                        {isLoading ? (
+                            <Button className={styleSheet.btn} style={{ marginTop: "15px" }}>
+                                <Spinner animation="border" size="sm" />
+                                Verifying..
+                            </Button>) : (
+                            <Button
+                                type="submit"
+                                style={{ marginTop: "15px" }}
+                                className={styleSheet.btn}
+                            >
+                                Verify
+                            </Button>
+                        )}
+
 
                     </Form>
                 </Card.Body>

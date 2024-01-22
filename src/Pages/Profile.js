@@ -1,14 +1,15 @@
-import React, { useState, useRef, useContext, useEffect, } from "react";
+import React, { useState, useRef, useEffect, } from "react";
 import Header from "../components/Layout/Header";
 import { Button, Container, Form } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import AuthContext from "../Store/AuthContext";
 import stylesheet from "./Profile.module.css";
 import { AiOutlineGithub, AiOutlineGlobal } from "react-icons/ai";
+import {useSelector} from "react-redux";
 
 const Profile = (props) => {
 
-    const authcontext = useContext(AuthContext)
+    const idToken = useSelector(state => state.authentication.idToken);
+
 
     const fullNameInputRef = useRef();
     const ProfileUrlInputRef = useRef();
@@ -22,7 +23,7 @@ const Profile = (props) => {
         fetch("https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=AIzaSyCx6diWtCvuIc81jygEdF0IKmvnDVNFLyE",{
             method: "POST",
             body: JSON.stringify({
-                idToken: authcontext.token,
+                idToken: idToken,
             }),
             headers: {
                 "Content-Type": "application/json",
@@ -40,12 +41,14 @@ const Profile = (props) => {
                 })
             }
         }).then((data) => {
+
             setFullName(data.users[0].displayName);
             setProfileUrl(data.users[0].photoUrl);
+
         }).catch((error) => {
             alert(error.message);
         });
-    }, []);
+    }, [idToken]);
 
     const cancelHandler = () => {
         navigate("/home");
@@ -63,7 +66,7 @@ const Profile = (props) => {
         fetch("https://identitytoolkit.googleapis.com/v1/accounts:update?key=AIzaSyCx6diWtCvuIc81jygEdF0IKmvnDVNFLyE", {
             method: "POST",
             body: JSON.stringify({
-                idToken: authcontext.token,
+                idToken: idToken,
                 displayName: enteredFullName,
                 photoUrl: enteredProfileUrl,
                 returnSecureToken: true,

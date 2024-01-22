@@ -1,38 +1,50 @@
-import React, { useRef, useState, useContext } from "react";
+import React, { useRef, useState } from "react";
 import { BiSolidLockAlt } from "react-icons/bi";
 import stylesheet from "./Authentication.module.css";
 import { Col, Row, Button, Form } from "react-bootstrap";
-import AuthContext from "../../Store/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { login } from "../../Store/authSlice";
+import { useDispatch } from "react-redux";
 
 const Authentication = (props) => {
 
   const navigate = useNavigate();
 
-    const emailInputRef = useRef();
-    const passwordInputRef = useRef();
-    const confirmPasswordInputRef =useRef();
+  const emailInputRef = useRef();
+  const passwordInputRef = useRef();
+  const confirmPasswordInputRef = useRef();
 
-    const authcontext = useContext(AuthContext);
+  const dispatch = useDispatch();
 
-    const [isLogin, setIsLogin] = useState(true);
+  const [isLogin, setIsLogin] = useState(true);
 
-    const switchAuthModeHandler = () => {
-      setIsLogin((prevState) => !prevState);
-    };
+  const switchAuthModeHandler = () => {
+    setIsLogin((prevState) => !prevState);
+  };
 
-  const submitHandler =(event)=>{
+  const submitHandler = (event) => {
     event.preventDefault()
 
     const enterdEmail = emailInputRef.current.value
     const enterdPassword = passwordInputRef.current.value
-    const enterdConfirmPassword = !isLogin? confirmPasswordInputRef.current.value: null
+    const enterdConfirmPassword = !isLogin ? confirmPasswordInputRef.current.value : null
 
-    let errorMessage
+
     let url;
     if (!isLogin && enterdPassword !== enterdConfirmPassword) {
-      console.log(enterdPassword,enterdConfirmPassword)
-      alert("password didn't match");
+      console.log(enterdPassword, enterdConfirmPassword)
+      toast.error("Passwords did not match", {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        progress: undefined,
+      });
+
       return;
     }
 
@@ -62,71 +74,123 @@ const Authentication = (props) => {
           return res.json();
         } else {
           return res.json().then((data) => {
-            if(isLogin){
-              if(data.error.message==="EMAIL_NOT_FOUND"){
-                errorMessage="User not found."
-              }else if(data.error.message==="INVALID_PASSWORD"){
-                errorMessage ="Invalid password."
-              }else{
-                errorMessage="Login Failed!"
+            if (isLogin) {
+              if (data.error.message === "EMAIL_NOT_FOUND") {
+                toast.error("User not found.", {
+                  position: "top-right",
+                  autoClose: 2000,
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  pauseOnHover: false,
+                  draggable: true,
+                  progress: undefined,
+                });
+              } else if (data.error.message === "INVALID_PASSWORD") {
+                toast.error("Invalid password.", {
+                  position: "top-right",
+                  autoClose: 2000,
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  pauseOnHover: false,
+                  draggable: true,
+                  progress: undefined,
+                });
+
+              } else {
+                toast.error("Login Failed!", {
+                  position: "top-right",
+                  autoClose: 2000,
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  pauseOnHover: false,
+                  draggable: true,
+                  progress: undefined,
+                });
               }
             }
-            else{
-              if(data.error.message==="EMAIL_EXISTS"){
-                  errorMessage="User already exists."
-              }else{
-                errorMessage="Sign-up Failed!"
+            else {
+              if (data.error.message === "EMAIL_EXISTS") {
+                toast.error("User already exists.", {
+                  position: "top-right",
+                  autoClose: 2000,
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  pauseOnHover: false,
+                  draggable: true,
+                  progress: undefined,
+                });
+              } else {
+                toast.error("Sign-up Failed!", {
+                  position: "top-right",
+                  autoClose: 2000,
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  pauseOnHover: false,
+                  draggable: true,
+                  progress: undefined,
+                });
               }
             }
 
-            
-            throw new Error(errorMessage);
           });
         }
       })
       .then((data) => {
-        if(errorMessage){
-          alert(errorMessage)
-        }else{
-          if(isLogin){
-            navigate('/home')
-            console.log("User has successfully signed in")
-          }else{
-            
-            navigate('/verification')
-            console.log("User has successfully signed up")
-          }
-          
-          authcontext.login(data.idToken,data.email);
-          console.log(data);
+        console.log(data)
+        const idToken = data.idToken;
+        const userId = data.email;
+        dispatch(login({ idToken, userId }));
+        if (isLogin) {
+          toast.success("User has successfully signed in", {
+            position: "top-right",
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: true,
+            progress: undefined,
+          });
+          navigate('/home')
+        } else {
 
-          if(!isLogin){
-            confirmPasswordInputRef.current.value=""
-          }
-          emailInputRef.current.value=""
-          passwordInputRef.current.value=""
+          navigate('/verification')
+          toast.success("User has successfully signed up", {
+            position: "top-right",
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: true,
+            progress: undefined,
+          });
         }
 
-        
+
+        if (!isLogin) {
+          confirmPasswordInputRef.current.value = ""
+        }
+        emailInputRef.current.value = ""
+        passwordInputRef.current.value = ""
+
       })
       .catch((err) => {
         alert(err.message);
       });
   };
 
-  const forgetPasswordHandler= () => {
-      navigate("/forget");
+  const forgetPasswordHandler = () => {
+    navigate("/forget");
   };
 
   return (
     <>
       <Form onSubmit={submitHandler}
-        className={`${isLogin?stylesheet['auth-root-login']:stylesheet["auth-root"]}`}>
+        className={`${isLogin ? stylesheet['auth-root-login'] : stylesheet["auth-root"]}`}>
         <Row>
           <Col>
             <h2 className={stylesheet.heading}>
-            <BiSolidLockAlt className={stylesheet.lock} />
-            {isLogin ? "Log In" : "Sign Up"}
+              <BiSolidLockAlt className={stylesheet.lock} />
+              {isLogin ? "Log In" : "Sign Up"}
             </h2>
           </Col>
           <Form.Group
@@ -161,7 +225,7 @@ const Authentication = (props) => {
             />
           </Form.Group>
 
-         {!isLogin && ( <Form.Group
+          {!isLogin && (<Form.Group
             className={`${stylesheet["form-group"]}`}
           >
             <Form.Label className={stylesheet["form-label"]}>
@@ -176,18 +240,18 @@ const Authentication = (props) => {
 
             />
           </Form.Group>
-         )}
-         {isLogin &&
-           <Form.Group className={`${stylesheet["form-group"]}`}>
-            <Button onClick={forgetPasswordHandler} className={stylesheet.forgetBtn}>Forget Password ?</Button>
-           </Form.Group>
-           }
+          )}
+          {isLogin &&
+            <Form.Group className={`${stylesheet["form-group"]}`}>
+              <Button onClick={forgetPasswordHandler} className={stylesheet.forgetBtn}>Forget Password ?</Button>
+            </Form.Group>
+          }
           <Form.Group as={Col} className={`${stylesheet["form-group"]}`}>
             <Button type="submit" className={stylesheet.btn}>
-           { isLogin ? "Log In" : "Sign Up"}
+              {isLogin ? "Log In" : "Sign Up"}
             </Button>
           </Form.Group>
-          
+
         </Row>
 
       </Form>
@@ -206,4 +270,3 @@ const Authentication = (props) => {
 export default Authentication;
 
 
-    

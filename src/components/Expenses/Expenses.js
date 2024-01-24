@@ -1,4 +1,4 @@
-import React, { useCallback, useState, } from "react";
+import React, { useCallback, useState, useEffect} from "react";
 import { Container, ListGroup, Modal, Form, Button } from "react-bootstrap";
 import styleSheet from "./Expenses.module.css";
 import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
@@ -223,13 +223,11 @@ const Expenses = () => {
     }, [expenses]);
 
 
-
-
-
     return (
         <>
             <Container className={styleSheet.expenses}>
-                <ListGroup as="ul" className={styleSheet.ul}>
+                <ListGroup as="ul" className={styleSheet.ul} breakpoints={["xxxl", "xxl", "xl", "lg", "md", "sm", "xs", "xxs"]}
+        minbreakpoint="xxs">
                     <ListGroup.Item style={{ textAlign: "justify" }}
                         className={styleSheet.list}>
                         Amount - Description - Category{" "}

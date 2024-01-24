@@ -1,13 +1,14 @@
-import React, { useState, useRef, useEffect, useCallback } from "react";
+import React, { useState, useRef, useEffect} from "react";
 import { Form, Container, Button } from "react-bootstrap";
 import styleSheet from "./AddExpenses.module.css";
 import { useDispatch, useSelector } from "react-redux";
-import {expenseActions} from "../../Store/expenseSlice";
+import { expenseActions } from "../../Store/expenseSlice";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import themeSlice from "../../Store/themeSlice";
 
 
-const AddExpenses = ({premiumThem}) => {
+const AddExpenses = ({ premiumThem }) => {
 
     const currencyInputRef = useRef();
     const amountInputRef = useRef();
@@ -23,8 +24,10 @@ const AddExpenses = ({premiumThem}) => {
     const dispatch = useDispatch();
 
     const userEmail = useSelector(state => state.authentication.userId);
-    
-    const email = userEmail.replace(/[^a-zA-Z0-9]/g, "");
+    const emailId = userEmail || "";
+    const email = emailId.replace(/[^a-zA-Z0-9]/g, "");
+
+    const isDarkTheme = useSelector((state) => state.theme.isDarkTheme);
 
     const currencyInputChangeHandler = () => {
         setCurrency(currencyInputRef.current.value);
@@ -42,9 +45,58 @@ const AddExpenses = ({premiumThem}) => {
         setCategory(categoryInputRef.current.value);
     };
 
-
     const submitHandler = async (event) => {
         event.preventDefault();
+
+        if (!currency) {
+            toast.error("Please select currency", {
+                position: "top-right",
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+            });
+            return
+        }
+
+        if (!amount || isNaN(amount)) {
+            toast.error("Please Enter Amount", {
+                position: "top-right",
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+            });
+            return
+        }
+        if (!description) {
+            toast.error("Please Description", {
+                position: "top-right",
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+            });
+            return
+        }
+        if (!category) {
+            toast.error("Please Select a category.", {
+                position: "top-right",
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+            });
+            return
+        }
 
         const expenseData = {
             currency: currency,
@@ -167,13 +219,13 @@ const AddExpenses = ({premiumThem}) => {
                 <h5 className={styleSheet.title}>Add New Expense</h5>
                 <Form onSubmit={submitHandler}>
                     <Form.Group className={styleSheet["form-group"]} style={{ display: 'flex', flexDirection: "row", alignItems: "center" }}>
-                        <Form.Label className={styleSheet["form-label"]}>Amount:{" "} </Form.Label>
+                        <Form.Label htmlFor="amount" className={styleSheet["form-label"]}>Amount:{" "} </Form.Label>
                         <div style={{ display: 'flex', flexDirection: "row", alignItems: "center" }}>
-                            <Form.Select className={styleSheet["form-controls"]} aria-label="expensecurrency"
+                            <Form.Select className={styleSheet["form-controls"]} aria-label="expensecurrency" id="amount"
                                 ref={currencyInputRef}
                                 value={currency}
                                 onChange={currencyInputChangeHandler}>
-                                <option value={null}>Select Currency</option>
+                                <option value="">Select Currency</option>
                                 <option value="$">$</option>
                                 <option value="₹">₹</option>
                                 <option value="€">€</option>
@@ -181,6 +233,8 @@ const AddExpenses = ({premiumThem}) => {
                             </Form.Select>
                             <Form.Control style={{ width: "100%" }}
                                 type="number"
+                                required
+                                id="amount"
                                 placeholder="Enter the Amount "
                                 ref={amountInputRef}
                                 value={amount}
@@ -191,11 +245,13 @@ const AddExpenses = ({premiumThem}) => {
 
                     </Form.Group>
                     <Form.Group className={styleSheet["form-group"]}>
-                        <Form.Label className={styleSheet["form-label"]}>
-                            Description:{" "}
+                        <Form.Label htmlFor="description" className={styleSheet["form-label"]}>
+                            Please Description:{" "}
                         </Form.Label>
                         <Form.Control
                             type="text"
+                            required
+                            id="description"
                             placeholder="Enter Description "
                             ref={descriptionInputRef}
                             value={description}
@@ -204,25 +260,28 @@ const AddExpenses = ({premiumThem}) => {
                         />
                     </Form.Group>
                     <Form.Group className={styleSheet["form-group"]}>
-                        <Form.Label className={styleSheet["form-label"]}>
-                            Category:{" "}
+                        <Form.Label htmlFor="category" className={styleSheet["form-label"]}>
+                            Please Select a Category:{" "}
                         </Form.Label>
                         <Form.Select
+                            id="category"
+                            required
                             aria-label="expenseCategroy"
                             ref={categoryInputRef}
                             value={category}
                             onChange={catergoryInputChangeHandler}
                             className={styleSheet["form-controls"]}
                         >
-                            <option value={null}>Select Where You Spend </option>
+                            <option value="">Select Where You Spend </option>
                             <option value="car servicing">Car servicing </option>
                             <option value="petrol">Petrol </option>
                             <option value="food">Food</option>
                             <option value="grocery">Grocery</option>
+                            <option value="other">Other</option>
                         </Form.Select>
                     </Form.Group>
                     <Form.Group style={{ textAlign: 'center' }}>
-                        <Button className={styleSheet.btn} type="submit">Add</Button>
+                        <Button className={styleSheet.btn} type="submit" disabled={!currency|| !amount || !description ||!category}>Add</Button>
                     </Form.Group>
                 </Form>
             </Container>

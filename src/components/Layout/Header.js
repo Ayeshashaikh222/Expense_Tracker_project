@@ -1,6 +1,6 @@
 import React from "react";
 import stylesheet from "./Header.module.css";
-import { Container, Navbar, Nav, Button } from "react-bootstrap";
+import { Navbar, Nav, Button } from "react-bootstrap";
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { BiLogOut } from 'react-icons/bi';
 import { logout } from "../../Store/authSlice";
@@ -25,15 +25,19 @@ const Header = (props) => {
 
     return (
         <>
-           <Navbar className={stylesheet.navbar}>
-        <Container>
+           <Navbar className={isDarkTheme?stylesheet["navbar-dark"]:stylesheet["navbar"]}
+       breakpoints={["xxxl", "xxl", "xl", "lg", "md", "sm", "xs", "xxs"]}
+        minbreakpoint="xxs">
+        <div  breakpoints={["xxxl", "xxl", "xl", "lg", "md", "sm", "xs", "xxs"]}
+        minbreakpoint="xxs">
           <Nav >
             <Nav.Item style={{ color: "turquoise", fontSize: "25px" }}>
               Expense Tracker
             </Nav.Item>
           </Nav>
-        </Container>
-        <Container>
+          </div>
+        <div  breakpoints={["xxxl", "xxl", "xl", "lg", "md", "sm", "xs", "xxs"]}
+        minbreakpoint="xxs">
           {location.pathname !== "/profile" && (
             <span>
               Your Profile is Incomplete
@@ -42,13 +46,16 @@ const Header = (props) => {
               </NavLink>
             </span>
           )}
-        </Container>
+        </div>
+        <div  breakpoints={["xxxl", "xxl", "xl", "lg", "md", "sm", "xs", "xxs"]}
+        minbreakpoint="xxs">
         {auth.isLoggedIn && location.pathname !== "/auth" && (
           <Button className={stylesheet.logoutBtn} onClick={logoutHandler}>
             <BiLogOut className={stylesheet["logout-icon"]} />
             <span>Log Out</span>
           </Button>
         )}
+        </div>
       </Navbar> 
         </>
     );

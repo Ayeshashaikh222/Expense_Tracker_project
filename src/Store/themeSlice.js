@@ -13,7 +13,7 @@ const themeSlice = createSlice({
        enableLightTheme (state) {
         state.isDarkTheme = false
        },
-       toggleDarkThemeActivate (state) {
+       toogleDarkThemeActivate (state) {
         state.isDarkThemeActivate = !state.isDarkThemeActivate
        },
     },

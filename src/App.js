@@ -7,15 +7,19 @@ import Profile from './Pages/Profile';
 import Verification from './components/Authentication/Verification';
 import ResetPassword from './components/Authentication/ResetPassword';
 import {useSelector} from "react-redux";
+import themeSlice from './Store/themeSlice';
 
 
 function App() {
   
 const isLoggedIn = useSelector(state => state.authentication.isLoggedIn);
+const isDarkTheme = useSelector((state) => state.theme.isDarkTheme);
 console.log(isLoggedIn);
 
   return (
-    <>
+    <div breakpoints={["xxxl", "xxl", "xl", "lg", "md", "sm", "xs", "xxs"]}
+    minbreakpoint="xxs" className={isDarkTheme && isLoggedIn? stylesheet['dark']:""}>
+    
     <Routes>
       
       <Route path="/" element={<Authentication />} />
@@ -37,7 +41,7 @@ console.log(isLoggedIn);
     
     </Routes>
 
-    </>
+    </div>
 
   );
 }

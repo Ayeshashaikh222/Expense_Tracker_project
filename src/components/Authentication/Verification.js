@@ -4,14 +4,12 @@ import { useNavigate } from "react-router-dom";
 import styleSheet from "./Verification.module.css";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 
 
 const Vertification = (props) => {
 
     const emailInputRef = useRef();
-
-    const dispatch = useDispatch();
 
     const [email, setEmail] = useState("");
 

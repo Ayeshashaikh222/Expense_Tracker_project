@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import Header from '../components/Layout/Header';
 import AddExpenses from '../components/Expenses/AddExpenses';
 import Expenses from '../components/Expenses/Expenses';
@@ -23,6 +23,7 @@ const Home = (props) => {
 
 
   const toogleTheme = () => {
+    
      if(isDarkTheme){
       dispatch(themeActions.enableLightTheme());
      } else {
@@ -39,7 +40,7 @@ const Home = (props) => {
       !isDarkThemeActivate &&
       isLoggedIn
     ) {
-      dispatch(toogleDarkThemActivate());
+      dispatch(themeActions.toogleDarkThemeActivate());
     }
   };
   const premiumThem = isDarkTheme ? stylesheet["dark-them"] : ""

@@ -10,6 +10,8 @@ const Header = (props) => {
     
   const auth = useSelector(state => state.authentication);
 
+  const isDarkTheme = useSelector(state => state.theme.isDarkTheme);
+
     const dispatch = useDispatch();
 
     const location = useLocation();

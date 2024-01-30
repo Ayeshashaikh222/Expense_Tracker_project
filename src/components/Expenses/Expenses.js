@@ -131,8 +131,9 @@ const Expenses = () => {
                 dispatch(expenseActions.setExpenseToEdit(null));
                 dispatch(expenseActions.setShowEditModal(false));
                 res.json();
-                // authcontext.setReFetch(prevstate => !prevstate);
                 fetchExpenseHandler();
+                // authcontext.setReFetch(prevstate => !prevstate);
+                
             } else {
                 return res.json().then((data) => {
                     toast.error("Failed to update expense", {

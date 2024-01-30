@@ -8,12 +8,14 @@ import Verification from './components/Authentication/Verification';
 import ResetPassword from './components/Authentication/ResetPassword';
 import {useSelector} from "react-redux";
 import themeSlice from './Store/themeSlice';
+import stylesheet from './App.module.css';
 
 
 function App() {
   
 const isLoggedIn = useSelector(state => state.authentication.isLoggedIn);
 const isDarkTheme = useSelector((state) => state.theme.isDarkTheme);
+
 console.log(isLoggedIn);
 
   return (

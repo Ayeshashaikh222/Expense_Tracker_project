@@ -14,6 +14,7 @@ const initialState = {
 }
 
 const authSlice = createSlice({
+
     name : "authentication",
     initialState,
     reducers: {
@@ -24,9 +25,11 @@ const authSlice = createSlice({
            state.isLoggedIn = true,
            localStorage.setItem("token", action.payload.idToken);
            localStorage.setItem("email", action.payload.userId);
+           
         },
 
         logout (state) {
+
             state.isLoggedIn = false,
             state.idToken = null,
             state.userId = "",

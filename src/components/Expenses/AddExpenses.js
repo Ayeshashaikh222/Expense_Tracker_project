@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect} from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Form, Container, Button } from "react-bootstrap";
 import styleSheet from "./AddExpenses.module.css";
 import { useDispatch, useSelector } from "react-redux";
@@ -106,7 +106,6 @@ const AddExpenses = ({ premiumThem }) => {
 
         }
         addExpenseHandler(expenseData);
-        onAddEx
         setCurrency("");
         setAmount("");
         setDescription("");
@@ -169,6 +168,7 @@ const AddExpenses = ({ premiumThem }) => {
                     progress: undefined,
                 });
                 return res.json();
+                
             } else {
                 return res.json().then((data) => {
                     // console.log("Failed to fetch expenses");
@@ -202,7 +202,7 @@ const AddExpenses = ({ premiumThem }) => {
             console.log(fetchedExpenses);
             dispatch(expenseActions.setExpenses(fetchedExpenses));
             dispatch(expenseActions.setTotalAmount(loadedAmount));
-
+            fetchExpenseHandler();
         })
 
     };
@@ -281,7 +281,7 @@ const AddExpenses = ({ premiumThem }) => {
                         </Form.Select>
                     </Form.Group>
                     <Form.Group style={{ textAlign: 'center' }}>
-                        <Button className={styleSheet.btn} type="submit" disabled={!currency|| !amount || !description ||!category}>Add</Button>
+                        <Button className={styleSheet.btn} type="submit" disabled={!currency || !amount || !description || !category}>Add</Button>
                     </Form.Group>
                 </Form>
             </Container>

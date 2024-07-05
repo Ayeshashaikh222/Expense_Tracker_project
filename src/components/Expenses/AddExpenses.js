@@ -115,6 +115,8 @@ const AddExpenses = ({ premiumThem }) => {
 
 
     const addExpenseHandler = (expenseData) => {
+        console.log(expenseData);
+        console.log(JSON.stringify(expenseData))
         fetch(`https://expense-tracker-4f57e-default-rtdb.firebaseio.com/expenses${email}.json`, {
             method: "POST",
             body: JSON.stringify(expenseData),
@@ -210,7 +212,7 @@ const AddExpenses = ({ premiumThem }) => {
     useEffect(() => {
         fetchExpenseHandler();
 
-    }, [fetchExpenseHandler]);
+    }, []);
 
     return (
         <>

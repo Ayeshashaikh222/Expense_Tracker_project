@@ -210,7 +210,7 @@ const Expenses = () => {
 
         fetchExpenseHandler();
 
-    }, [fetchExpenseHandler]);
+    }, []);
 
     useEffect(() => {
         const csv = expenses.reduce((csvString, expense) => {
